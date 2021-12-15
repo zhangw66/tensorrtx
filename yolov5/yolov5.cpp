@@ -152,13 +152,13 @@ ICudaEngine* createEngine_m(unsigned int maxBatchSize, IBuilder* builder, IBuild
         115_model.Upsample_11                   -         -  
         116_model.Upsample_12                   -         -
     */
-    Weights deconvwts12{ DataType::kFLOAT, deval, 384 * 2 * 2 };
-    IDeconvolutionLayer* deconv12 = network->addDeconvolutionNd(*deconv11->getOutput(0), 384, DimsHW{ 2, 2 }, deconvwts12, emptywts);
-    deconv12->setStrideNd(DimsHW{ 2, 2 });
+    Weights deconvwts12{ DataType::kFLOAT, deval, 384 * 1 * 1 };
+    IDeconvolutionLayer* deconv12 = network->addDeconvolutionNd(*deconv11->getOutput(0), 384, DimsHW{ 1, 1 }, deconvwts12, emptywts);
+    deconv12->setStrideNd(DimsHW{ 1, 1 });
     deconv12->setNbGroups(384);
 
 
-    ITensor* inputTensors13[] = { deconv11->getOutput(0), bottleneck_csp6->getOutput(0) };
+    ITensor* inputTensors13[] = { deconv12->getOutput(0), bottleneck_csp6->getOutput(0) };
     auto cat13 = network->addConcatenation(inputTensors13, 2);
 
     auto bottleneck_csp14 = bottleneckCSP(network, weightMap, *cat13->getOutput(0), 768, 384, 2, false, 1, 0.5, "model.14");
